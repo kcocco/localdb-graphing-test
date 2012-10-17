@@ -4,12 +4,16 @@ var id = getUrlVars()["id"];
 
 var db;
 
-// document.addEventListener("deviceready", onDeviceReady, false);
+document.addEventListener("deviceready", onDeviceReady, false);
 onDeviceReady();
 
 function onDeviceReady() {
 	console.log("opening database");
-    db = window.openDatabase("EmployeeDirectoryDB", "1.0", "PhoneGap Demo", 200000);
+	var shortName = 'IVFdata3';
+    var version = '1.0';
+    var displayName = 'PhoneGap Demo3';
+    var maxSize = 1024 * 1024; // 1MB ... in bytes
+    db = window.openDatabase(shortName, version, displayName, maxSize);
 	console.log("database opened");
     db.transaction(getEmployee, transaction_error);
 }
@@ -21,14 +25,40 @@ function transaction_error(tx, error) {
 
 function getEmployee(tx) {
 	$('#busy').show();
-	var sql = "select e.id, e.firstName, e.lastName, e.managerId, e.title, e.department, e.city, e.officePhone, e.cellPhone, " +
-				"e.email, e.picture, m.firstName managerFirstName, m.lastName managerLastName, count(r.id) reportCount " +
-				"from employee e left join employee r on r.managerId = e.id left join employee m on e.managerId = m.id " +
-				"where e.id=:id group by e.lastName order by e.lastName, e.firstName";
+	var sql = "SELECT OrderID, ClinStateCode, ClinCityCode, CurrClinNameAll, FshNDLvBirthsRate1 " +
+			  "from IVF " +
+			  "where ClinStateCode=:id";
 	tx.executeSql(sql, [id], getEmployee_success);
 }
 
 function getEmployee_success(tx, results) {
+		$('#busy').hide();
+		$('#fullName').text(results.rows.item(0).ClinStateCode);
+		var len = results.rows.length;
+	    for (var i=0; i<len; i++) {
+	    	var IVFresults = results.rows.item(i);
+			$('#actionList').append('<li><p class="line1">' + IVFresults.CurrClinNameAll + '</p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
+		}
+		setTimeout(function(){
+			scroll.refresh();
+		});
+		db = null;
+}
+
+function getUrlVars() {
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+}
+
+	
+/* function getEmployee_success(tx, results) {
 	$('#busy').hide();
 	var employee = results.rows.item(0);
 	$('#employeePic').attr('src', 'pics/' + employee.picture);
@@ -63,15 +93,15 @@ function getEmployee_success(tx, results) {
 	});
 	db = null;
 }
+*/
 
-function getUrlVars() {
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
+/* function getEmployee(tx) {
+	$('#busy').show();
+	var sql = "select e.id, e.firstName, e.lastName, e.managerId, e.title, e.department, e.city, e.officePhone, e.cellPhone, " +
+				"e.email, e.picture, m.firstName managerFirstName, m.lastName managerLastName, count(r.id) reportCount " +
+				"from employee e left join employee r on r.managerId = e.id left join employee m on e.managerId = m.id " +
+				"where e.id=:id group by e.lastName order by e.lastName, e.firstName";
+	tx.executeSql(sql, [id], getEmployee_success);
 }
+*/
+
