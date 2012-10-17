@@ -20,7 +20,6 @@ function onDeviceReady() {
 			// Note var db at head of code
 	        db = window.openDatabase(shortName, version, displayName, maxSize);
 			//alert(db); // You should have a database instance in db.
-			db.transaction(populateDB, transaction_error, populateDB_success);
 	    }
 	} catch(e) {
 	    // Error handling code goes here.
