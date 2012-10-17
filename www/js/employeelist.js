@@ -9,7 +9,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 onDeviceReady();
 
 function onDeviceReady() {
-    try {
+    /* try {
 	    if (!window.openDatabase) {
 	        alert('window.openDatabase - not supported');
 	    } else {
@@ -31,8 +31,9 @@ function onDeviceReady() {
 	        alert("Unknown error "+e+".");
 	    }
 	    return;
-	}
-
+	} */
+	
+	db = window.openDatabase("IVFData2", "1.0", "PhoneGap Demo2", 200000);
 	if (dbCreated)
     	db.transaction(getEmployees, transaction_error);
     else
