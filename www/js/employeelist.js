@@ -9,13 +9,13 @@ document.addEventListener("deviceready", onDeviceReady, false);
 onDeviceReady();
 
 function onDeviceReady() {
-    /* try {
+    try {
 	    if (!window.openDatabase) {
 	        alert('window.openDatabase - not supported');
 	    } else {
-	        var shortName = 'IVFdata';
+	        var shortName = 'IVFdata3';
 	        var version = '1.0';
-	        var displayName = 'PhoneGap Demo';
+	        var displayName = 'PhoneGap Demo3';
 	        var maxSize = 1024 * 1024; // 1MB ... in bytes
 			// Note var db at head of code
 	        db = window.openDatabase(shortName, version, displayName, maxSize);
@@ -31,9 +31,7 @@ function onDeviceReady() {
 	        alert("Unknown error "+e+".");
 	    }
 	    return;
-	} */
-	
-	db = window.openDatabase("IVFData2", "1.0", "PhoneGap Demo2", 200000);
+	} 
 	if (dbCreated)
     	db.transaction(getEmployees, transaction_error);
     else
