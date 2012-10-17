@@ -27,7 +27,8 @@ function getEmployee(tx) {
 	$('#busy').show();
 	var sql = "SELECT OrderID, ClinStateCode, ClinCityCode, CurrClinNameAll, FshNDLvBirthsRate1 " +
 			  "from IVF " +
-			  "where ClinStateCode=:id";
+			  "where ClinStateCode=:id " +
+			  "order by FshNDLvBirthsRate1 DESC";
 	tx.executeSql(sql, [id], getEmployee_success);
 }
 
@@ -37,7 +38,7 @@ function getEmployee_success(tx, results) {
 		var len = results.rows.length;
 	    for (var i=0; i<len; i++) {
 	    	var IVFresults = results.rows.item(i);
-			$('#actionList').append('<li><p class="line1">' + IVFresults.CurrClinNameAll + '</p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
+			$('#actionList').append('<li><p class="line1">' + IVFresults.CurrClinNameAll + ' (' + IVFresults.FshNDLvBirthsRate1 + ') </p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
 		}
 		setTimeout(function(){
 			scroll.refresh();
