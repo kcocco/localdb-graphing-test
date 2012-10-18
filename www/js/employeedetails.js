@@ -43,6 +43,7 @@ function getEmployee_success(tx, results) {
 		setTimeout(function(){
 			scroll.refresh();
 		});
+		renderChart();
 		db = null;
 }
 
@@ -58,6 +59,29 @@ function getUrlVars() {
 	    return vars;
 }
 
+
+function renderChart() {
+	var chart = new Highcharts.Chart({
+	    chart: {
+	        renderTo: 'container'
+	    },
+	    xAxis: {
+	        type: 'datetime',
+	        zoomType: 'x'
+	    },
+
+	    series: [{
+	        data: [
+	            {x: Date.UTC(2010, 0, 1), y: 1}, //one data point for each day
+	            {x: Date.UTC(2010, 0, 2), y: 1.1},
+	            {x: Date.UTC(2010, 0, 3), y: 1.4},
+	            {x: Date.UTC(2010, 0, 4), y: 1.8},
+	            {x: Date.UTC(2010, 0, 5), y: 2.5},
+	            {x: Date.UTC(2010, 0, 6), y: 3.8}
+	        ]
+	    }]
+	});
+}
 	
 /* function getEmployee_success(tx, results) {
 	$('#busy').hide();
