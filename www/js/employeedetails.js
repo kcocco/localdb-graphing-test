@@ -43,31 +43,35 @@ function getEmployee_success(tx, results) {
 		           type: 'bar'
 		       },
 		       title: {
-		           text: 'Success Rate Cycle to Live Birth'
+		           text: 'Percentage of cycles resulting in live births'
 		       },
 		       subtitle: {
-		           text: 'Source: CDC Data.gov'
+		           text: 'Source: Assisted Reproductive Technology (ART) Report CDC.gov'
 		       },
 		       xAxis: {
 		           categories: [],
 		           title: {
 		               text: null
 		           }
-		       },
+		       },		
 		       yAxis: {
+			       allowDecimals: false,
 		           min: 0,
 		           title: {
 		               text: 'Success Rate %',
-		               align: 'high'
-		           },
-		           labels: {
-		               overflow: 'justify'
+		               align: 'middle',
+		               style: {
+		                    fontWeight: 'bold'
+		                }
 		           }
+			   },
+		       labels: {
+		               overflow: 'justify'
 		       },
 		       tooltip: {
 		           formatter: function() {
 		               return ''+
-		                   this.series.name +': '+ this.y +' millions';
+		                   this.series.name +': '+ this.y +' %';
 		           }
 		       },
 		       plotOptions: {
@@ -77,7 +81,8 @@ function getEmployee_success(tx, results) {
 		               }
 		           }
 		       },
-		       /* legend: {
+		       legend: {
+				   enabled: false,
 		           layout: 'vertical',
 		           align: 'right',
 		           verticalAlign: 'top',
@@ -87,7 +92,7 @@ function getEmployee_success(tx, results) {
 		           borderWidth: 1,
 		           backgroundColor: '#FFFFFF',
 		           shadow: true
-		       },*/
+		       },
 		       credits: {
 		           enabled: false
 		       },
@@ -108,6 +113,23 @@ function getEmployee_success(tx, results) {
 		options.series.push(series);
 		// alert(JSON.stringify(options, null, 4));
 		var chart = new Highcharts.Chart(options);
+		
+		// National Average
+		chart.yAxis[0].addPlotLine({
+		                value: 41.5,
+		                color: 'blue',
+		                width: 4,
+		                id: 'NationalAvg'
+		            });
+		
+		// State (selected) Average 
+					   chart.yAxis[0].addPlotLine({
+		               value: 37.5,
+		               color: 'green',
+		               width: 4,
+		               id: 'NationalAvg'
+		           });
+		
 		setTimeout(function(){
 			scroll.refresh();
 		});
