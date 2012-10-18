@@ -2,6 +2,106 @@ var scroll = new iScroll('wrapper', { vScrollbar: false, hScrollbar:false, hScro
 
 var id = getUrlVars()["id"];
 
+function getUrlVars() {
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+}
+
+//highcharts
+var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'area',
+                inverted: true
+            },
+            title: {
+                text: 'Patient Diagnosis Comparison'
+            },
+            subtitle: {
+                style: {
+                    position: 'absolute',
+                    right: '0px',
+                    bottom: '10px'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 10,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF'
+            },
+            xAxis: {
+                categories: [
+                    'Tubal factor',	
+					'Ovulatory dysfunction',
+					'Diminished ovarian reserve',
+					'Endometriosis',
+					'Uterine factor',
+					'Male factor',
+					'Other factor',
+					'Unknown factor',
+					'Multi-Female factors only',
+					'Multi-Female & Male factors'
+                ]
+            },
+            yAxis: {
+                title: {
+                    text: 'Percentage %'
+                },
+                labels: {
+                    formatter: function() {
+                        return this.value;
+                    }
+                },
+                min: 0
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                    this.x +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                area: {
+                    fillOpacity: 0.5
+                }
+            },	
+			credits: {
+			    enabled: false
+			},
+            series: [{
+                name: 'Clinic Selected',
+                data: [4, 8, 14, 7, 4, 14, 8, 11, 14, 16]
+            }, {
+				/* National Patient Diagnosis
+				Tubal factor	7%	
+				Ovulatory dysfunction	7%
+				Diminished ovarian reserve	15%		
+				Endometriosis	4%
+				Uterine factor	1%
+				Male factor	17%		
+				Other factor	7%
+				Unknown factor	12%
+				Multi-Female factors only	11%
+				Multi-Female & Male factors	18%
+				*/
+                name: 'National Average',
+                data: [7, 7, 15, 4, 1, 17, 7, 12, 11, 18]
+            }]   
+});
+
+/*
 var db;
 
 document.addEventListener("deviceready", onDeviceReady, false);
@@ -108,7 +208,7 @@ function getEmployee_success(tx, results) {
 	    	var IVFresults = results.rows.item(i);
 			options.xAxis.categories.push(IVFresults.CurrClinNameAll);
 			series.data.push(parseFloat(IVFresults.FshNDLvBirthsRate1));
-			$('#actionList').append('<li><a href="clinicdetails.html?id=' + IVFresults.OrderID + '"><p class="line1">' + IVFresults.CurrClinNameAll + ' (' + IVFresults.FshNDLvBirthsRate1 + ') </a></p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
+			$('#actionList').append('<li><a href="clinicdetails.html?id=' + employee.OrderID + '"><p class="line1">' + IVFresults.CurrClinNameAll + ' (' + IVFresults.FshNDLvBirthsRate1 + ') </a></p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
 		}
 		options.series.push(series);
 		// alert(JSON.stringify(options, null, 4));
@@ -136,63 +236,6 @@ function getEmployee_success(tx, results) {
 		db = null;
 }
 
-function getUrlVars() {
-	    var vars = [], hash;
-	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-	    for(var i = 0; i < hashes.length; i++)
-	    {
-	        hash = hashes[i].split('=');
-	        vars.push(hash[0]);
-	        vars[hash[0]] = hash[1];
-	    }
-	    return vars;
-}
-	
-	
-/* function getEmployee_success(tx, results) {
-	$('#busy').hide();
-	var employee = results.rows.item(0);
-	$('#employeePic').attr('src', 'pics/' + employee.picture);
-	$('#fullName').text(employee.firstName + ' ' + employee.lastName);
-	$('#employeeTitle').text(employee.title);
-	$('#city').text(employee.city);
-	console.log(employee.officePhone);
-	if (employee.managerId>0) {
-		$('#actionList').append('<li><a href="employeedetails.html?id=' + employee.managerId + '"><p class="line1">View Manager</p>' +
-				'<p class="line2">' + employee.managerFirstName + ' ' + employee.managerLastName + '</p></a></li>');
-	}
-	if (employee.reportCount>0) {
-		$('#actionList').append('<li><a href="reportlist.html?id=' + employee.id + '"><p class="line1">View Direct Reports</p>' +
-				'<p class="line2">' + employee.reportCount + '</p></a></li>');
-	}
-	if (employee.email) {
-		$('#actionList').append('<li><a href="mailto:' + employee.email + '"><p class="line1">Email</p>' +
-				'<p class="line2">' + employee.email + '</p><img src="img/mail.png" class="action-icon"/></a></li>');
-	}
-	if (employee.officePhone) {
-		$('#actionList').append('<li><a href="tel:' + employee.officePhone + '"><p class="line1">Call Office</p>' +
-				'<p class="line2">' + employee.officePhone + '</p><img src="img/phone.png" class="action-icon"/></a></li>');
-	}
-	if (employee.cellPhone) {
-		$('#actionList').append('<li><a href="tel:' + employee.cellPhone + '"><p class="line1">Call Cell</p>' +
-				'<p class="line2">' + employee.cellPhone + '</p><img src="img/phone.png" class="action-icon"/></a></li>');
-		$('#actionList').append('<li><a href="sms:' + employee.cellPhone + '"><p class="line1">SMS</p>' +
-				'<p class="line2">' + employee.cellPhone + '</p><img src="img/sms.png" class="action-icon"/></a></li>');
-	}
-	setTimeout(function(){
-		scroll.refresh();
-	});
-	db = null;
-}
-*/
 
-/* function getEmployee(tx) {
-	$('#busy').show();
-	var sql = "select e.id, e.firstName, e.lastName, e.managerId, e.title, e.department, e.city, e.officePhone, e.cellPhone, " +
-				"e.email, e.picture, m.firstName managerFirstName, m.lastName managerLastName, count(r.id) reportCount " +
-				"from employee e left join employee r on r.managerId = e.id left join employee m on e.managerId = m.id " +
-				"where e.id=:id group by e.lastName order by e.lastName, e.firstName";
-	tx.executeSql(sql, [id], getEmployee_success);
-}
+	
 */
-
