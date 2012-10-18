@@ -35,15 +35,82 @@ function getEmployee(tx) {
 function getEmployee_success(tx, results) {
 		$('#busy').hide();
 		$('#fullName').text(results.rows.item(0).ClinStateCode);
+		
+		//highcharts
+		var options = {
+			    chart: {
+				   renderTo: 'container',
+		           type: 'bar'
+		       },
+		       title: {
+		           text: 'Success Rate Cycle to Live Birth'
+		       },
+		       subtitle: {
+		           text: 'Source: CDC Data.gov'
+		       },
+		       xAxis: {
+		           categories: [],
+		           title: {
+		               text: null
+		           }
+		       },
+		       yAxis: {
+		           min: 0,
+		           title: {
+		               text: 'Success Rate %',
+		               align: 'high'
+		           },
+		           labels: {
+		               overflow: 'justify'
+		           }
+		       },
+		       tooltip: {
+		           formatter: function() {
+		               return ''+
+		                   this.series.name +': '+ this.y +' millions';
+		           }
+		       },
+		       plotOptions: {
+		           bar: {
+		               dataLabels: {
+		                   enabled: true
+		               }
+		           }
+		       },
+		       /* legend: {
+		           layout: 'vertical',
+		           align: 'right',
+		           verticalAlign: 'top',
+		           x: -100,
+		           y: 100,
+		           floating: true,
+		           borderWidth: 1,
+		           backgroundColor: '#FFFFFF',
+		           shadow: true
+		       },*/
+		       credits: {
+		           enabled: false
+		       },
+		       series: []
+			};
+		
+		var series = { 
+			data: []
+		};
+		series.name = 'Cycle to Live Birth';
 		var len = results.rows.length;
 	    for (var i=0; i<len; i++) {
 	    	var IVFresults = results.rows.item(i);
+			options.xAxis.categories.push(IVFresults.CurrClinNameAll);
+			series.data.push(parseFloat(IVFresults.FshNDLvBirthsRate1));
 			$('#actionList').append('<li><p class="line1">' + IVFresults.CurrClinNameAll + ' (' + IVFresults.FshNDLvBirthsRate1 + ') </p><p class="line2">' + IVFresults.ClinCityCode + '</p></li>');
 		}
+		options.series.push(series);
+		// alert(JSON.stringify(options, null, 4));
+		var chart = new Highcharts.Chart(options);
 		setTimeout(function(){
 			scroll.refresh();
 		});
-		renderChart();
 		db = null;
 }
 
@@ -58,30 +125,7 @@ function getUrlVars() {
 	    }
 	    return vars;
 }
-
-
-function renderChart() {
-	var chart = new Highcharts.Chart({
-	    chart: {
-	        renderTo: 'container'
-	    },
-	    xAxis: {
-	        type: 'datetime',
-	        zoomType: 'x'
-	    },
-
-	    series: [{
-	        data: [
-	            {x: Date.UTC(2010, 0, 1), y: 1}, //one data point for each day
-	            {x: Date.UTC(2010, 0, 2), y: 1.1},
-	            {x: Date.UTC(2010, 0, 3), y: 1.4},
-	            {x: Date.UTC(2010, 0, 4), y: 1.8},
-	            {x: Date.UTC(2010, 0, 5), y: 2.5},
-	            {x: Date.UTC(2010, 0, 6), y: 3.8}
-	        ]
-	    }]
-	});
-}
+	
 	
 /* function getEmployee_success(tx, results) {
 	$('#busy').hide();
